@@ -28,7 +28,7 @@ articleField = {
 class Article(Resource):
     @marshal_with(articleField)
     def get(self):
-        article = ArticleModel.query.all()
+        article = ArticleModel.query.all() 
         return article 
     @marshal_with(articleField)
     def post(self):
@@ -58,24 +58,27 @@ class Articles(Resource):
         db.session.commit()
         article = ArticleModel.query.all()
         return article
-    @marshal_with
+    @marshal_with(articleField) 
     def patch(self,id):
         args = article_args.parse_args()
         articles = ArticleModel.query.filter_by(id=id).first()
         if not articles: 
             abort(404, message="Article not found!") 
-
-
-        if args["title"]:
-            articles.title = args["title"]
-        if args["content"]:
-            articles.content = args["content"]
-        if args["published_date"]:
-            
-            articles.published_date = datetime.strptime(args["published_date"], '%Y-%m-%d %H:%M:%S')
-
+        articles.title = args["title"]
+        articles.content = args["content"]
+        articles.published_date = args["published_date"]
+        articles.published_date = datetime.strptime(args["published_date"], "%Y-%m-%d %H:%M:%S") 
         db.session.commit()
-        return articles
+        return articles 
+
+        # if args["title"]:
+        #     articles.title = args["title"]
+        # if args["content"]:
+        #     articles.content = args["content"]
+        # if args["published_date"]:
+            
+            # articles.published_date = datetime.strptime(args["published_date"], '%Y-%m-%d %H:%M:%S')
+
 
 api.add_resource(Article, '/api/articles/')
 api.add_resource(Articles, '/api/articles/<int:id>')
